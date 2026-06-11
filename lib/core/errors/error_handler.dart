@@ -45,6 +45,7 @@ class ErrorHandler {
     return message.isEmpty ? 'Something went wrong.' : message;
   }
 
+
   static String _firebaseMessage(FirebaseException error) {
     return switch (error.code) {
       'permission-denied' => 'You do not have permission to access todos.',
