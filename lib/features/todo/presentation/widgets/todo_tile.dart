@@ -91,6 +91,7 @@ class TodoTile extends StatelessWidget {
                         Icon(Icons.edit_outlined),
                         SizedBox(width: 12),
                         Text('Edit'),
+
                       ],
                     ),
                   ),
