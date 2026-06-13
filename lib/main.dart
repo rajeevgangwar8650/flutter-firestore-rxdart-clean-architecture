@@ -5,7 +5,7 @@ import 'core/services/firebase_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.injector<FirebaseService>().initialize();
   await di.initDependencies();
+  await di.injector<FirebaseService>().initialize();
   runApp(const App());
 }

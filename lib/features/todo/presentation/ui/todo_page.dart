@@ -233,7 +233,6 @@ class _TodoListContent extends StatelessWidget {
             ],
           );
         }
-
         return StreamBuilder<List<TodoEntity>>(
           stream: bloc.todosStream,
           initialData: const <TodoEntity>[],

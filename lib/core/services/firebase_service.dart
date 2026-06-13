@@ -10,13 +10,6 @@ class FirebaseService {
       return;
     }
 
-    if (!DefaultFirebaseOptions.isConfigured) {
-      throw StateError(
-        'Firebase is not configured. Run `flutterfire configure` and update '
-        'lib/firebase_options.dart before running the production app.',
-      );
-    }
-
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
