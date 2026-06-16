@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_firestore_with_rxdart_project/app.dart';
 import 'package:flutter_firestore_with_rxdart_project/config/di/injection_container.dart';
+import 'package:flutter_firestore_with_rxdart_project/config/routes/app_routes.dart';
+import 'package:flutter_firestore_with_rxdart_project/config/routes/route_generator.dart';
 import 'package:flutter_firestore_with_rxdart_project/core/usecases/usecase.dart';
 import 'package:flutter_firestore_with_rxdart_project/core/utils/result.dart';
 import 'package:flutter_firestore_with_rxdart_project/features/todo/domain/entities/todo_entity.dart';
@@ -41,16 +43,51 @@ void main() {
   });
 
   testWidgets('App launches the Todo list route', (tester) async {
-    final bloc = _buildBloc(
-      todosStream: Stream.value(const Success(<TodoEntity>[])),
+    injector.registerFactory<TodoBloc>(
+      () =>
+          _buildBloc(todosStream: Stream.value(const Success(<TodoEntity>[]))),
     );
-    injector.registerFactory<TodoBloc>(() => bloc);
 
     await tester.pumpWidget(const App());
     await tester.pumpAndSettle();
 
     expect(find.text('Todos'), findsOneWidget);
     expect(find.byIcon(Icons.add), findsOneWidget);
+  });
+
+  testWidgets('Add todo FAB navigates to the add route', (tester) async {
+    injector.registerFactory<TodoBloc>(
+      () =>
+          _buildBloc(todosStream: Stream.value(const Success(<TodoEntity>[]))),
+    );
+    final router = RouteGenerator.createRouter(initialLocation: AppRoutes.todo);
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(App(router: router));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add Todo'), findsOneWidget);
+    expect(router.state.uri.path, AppRoutes.addTodo);
+  });
+
+  testWidgets('App opens the Add Todo route directly', (tester) async {
+    injector.registerFactory<TodoBloc>(
+      () =>
+          _buildBloc(todosStream: Stream.value(const Success(<TodoEntity>[]))),
+    );
+    final router = RouteGenerator.createRouter(
+      initialLocation: AppRoutes.addTodo,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(App(router: router));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add Todo'), findsOneWidget);
+    expect(find.byKey(const Key('todo_title_field')), findsOneWidget);
+    expect(router.state.uri.path, AppRoutes.addTodo);
   });
 }
 

@@ -34,7 +34,6 @@ class TodoBloc {
   final PublishSubject<String> _successSubject = PublishSubject<String>();
 
   StreamSubscription<Result<List<TodoEntity>>>? _todosSubscription;
-  bool _hasLoadedTodos = false;
 
   TodoBloc(
     this._createTodoUseCase,
@@ -61,13 +60,11 @@ class TodoBloc {
 
   void loadTodos() {
     _todosSubscription?.cancel();
-    _hasLoadedTodos = false;
     _setLoading(true);
     _listErrorSubject.add(null);
 
     _todosSubscription = _getTodosUseCase(const NoParams()).listen(
       (result) {
-        _hasLoadedTodos = true;
         _setLoading(false);
         result.when(
           success: (todos) {
@@ -80,7 +77,6 @@ class TodoBloc {
         );
       },
       onError: (Object error) {
-        _hasLoadedTodos = true;
         _setLoading(false);
         _listErrorSubject.add(ErrorHandler.getMessage(error));
       },
@@ -211,9 +207,7 @@ class TodoBloc {
       return;
     }
 
-    if (_hasLoadedTodos || isLoading) {
-      _loadingSubject.add(isLoading);
-    }
+    _loadingSubject.add(isLoading);
   }
 
   List<TodoEntity> _filterTodos(List<TodoEntity> todos, String query) {

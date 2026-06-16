@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../config/di/injection_container.dart';
+import '../../../../config/routes/app_routes.dart';
 import '../../../../core/widgets/error_widget.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../domain/entities/todo_entity.dart';
 import '../bloc/todo_bloc.dart';
 import '../widgets/todo_empty_state.dart';
 import '../widgets/todo_tile.dart';
-import 'add_todo_page.dart';
-import 'edit_todo_page.dart';
 
 class TodoPage extends StatefulWidget {
   final TodoBloc? bloc;
@@ -159,18 +159,12 @@ class _TodoPageState extends State<TodoPage> {
     );
   }
 
-  Future<void> _openAddTodo(BuildContext context) {
-    return Navigator.of(
-      context,
-    ).push(MaterialPageRoute<void>(builder: (_) => AddTodoPage(bloc: _bloc)));
+  void _openAddTodo(BuildContext context) {
+    context.go(AppRoutes.addTodo);
   }
 
-  Future<void> _openEditTodo(BuildContext context, TodoEntity todo) {
-    return Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => EditTodoPage(bloc: _bloc, todo: todo),
-      ),
-    );
+  void _openEditTodo(BuildContext context, TodoEntity todo) {
+    context.go(AppRoutes.editTodo, extra: todo);
   }
 
   Future<void> _confirmDelete(BuildContext context, TodoEntity todo) async {
