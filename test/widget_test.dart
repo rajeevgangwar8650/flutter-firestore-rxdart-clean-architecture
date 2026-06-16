@@ -89,6 +89,26 @@ void main() {
     expect(find.byKey(const Key('todo_title_field')), findsOneWidget);
     expect(router.state.uri.path, AppRoutes.addTodo);
   });
+
+  testWidgets('Edit route without todo data redirects to the list', (
+    tester,
+  ) async {
+    injector.registerFactory<TodoBloc>(
+      () =>
+          _buildBloc(todosStream: Stream.value(const Success(<TodoEntity>[]))),
+    );
+    final router = RouteGenerator.createRouter(
+      initialLocation: AppRoutes.editTodo,
+    );
+    addTearDown(router.dispose);
+
+    await tester.pumpWidget(App(router: router));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Todos'), findsOneWidget);
+    expect(find.text('Todo data is required.'), findsNothing);
+    expect(router.state.uri.path, AppRoutes.todo);
+  });
 }
 
 TodoBloc _buildBloc({required Stream<Result<List<TodoEntity>>> todosStream}) {

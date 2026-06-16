@@ -18,22 +18,20 @@ class RouteGenerator {
         GoRoute(
           path: AppRoutes.addTodo,
           builder: (context, _) => AddTodoPage(
-            onCancel: () => context.go(AppRoutes.todo),
-            onSaved: () => context.go(AppRoutes.todo),
+            onCancel: () => context.replace(AppRoutes.todo),
+            onSaved: () => context.replace(AppRoutes.todo),
           ),
         ),
         GoRoute(
           path: AppRoutes.editTodo,
+          redirect: (_, state) =>
+              state.extra is TodoEntity ? null : AppRoutes.todo,
           builder: (context, state) {
-            final todo = state.extra;
-            if (todo is! TodoEntity) {
-              return _errorPage('Todo data is required.');
-            }
-
+            final todo = state.extra as TodoEntity;
             return EditTodoPage(
               todo: todo,
-              onCancel: () => context.go(AppRoutes.todo),
-              onSaved: () => context.go(AppRoutes.todo),
+              onCancel: () => context.replace(AppRoutes.todo),
+              onSaved: () => context.replace(AppRoutes.todo),
             );
           },
         ),
