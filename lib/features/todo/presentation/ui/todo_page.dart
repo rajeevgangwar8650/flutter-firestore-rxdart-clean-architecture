@@ -47,7 +47,7 @@ class _TodoPageState extends State<TodoPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todos'),
+        title: Text('Todos',style: TextStyle(fontSize: MediaQuery.of(context).size.width> 600 ? 20 : 16),),
         centerTitle: false,
         actions: [
           StreamBuilder<bool>(
